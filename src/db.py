@@ -21,6 +21,18 @@ def db_setup(conn):
         )
     """)
 
+    # User sessions
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS sessions (
+            cookie     TEXT    NOT NULL UNIQUE PRIMARY KEY,
+            user_id    INTEGER NOT NULL,
+            expires_at TEXT    NOT NULL
+        )
+    """)
+
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_sessions_cookie ON sessions(cookie);")
+
+
     # Shops we can buy from
     cur.execute("""
         CREATE TABLE IF NOT EXISTS shops (
