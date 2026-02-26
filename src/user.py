@@ -45,3 +45,9 @@ def get_user_id(cookie):
     if row:
         return row["user_id"]
     return None
+
+def user_id_from_login(login):
+    row = cur.execute("""SELECT id from users where login == ?""", (login,)).fetchone()
+    if row:
+        return row["id"]
+    return None

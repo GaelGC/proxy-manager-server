@@ -51,3 +51,11 @@ def test_session():
     cur.close()
     conn.close()
     assert get_user_id(auth) is None
+
+@pytest.mark.dependency(depends=["test_user_creation"],
+    name="test_user_lookup")
+def test_user_lookup():
+    fake_db_setup()
+    create_user("user1", "aaa")
+    assert user_id_from_login("user1") == 1
+    assert user_id_from_login("user2") is None
