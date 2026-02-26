@@ -149,6 +149,23 @@ def db_setup(conn):
     conn.commit()
     cur.close()
 
+def fake_db_setup():
+    if os.environ.get('IS_TEST', '0') != '1':
+        print('WARNING: This command will wipe your database. If indeed trying to run in test mode, set IS_TEST=1')
+        exit(1)
+    if os.environ[DB_PATH_ENVNAME] != "db/test.db":
+        print('For tests, as a safety measure, DB MUST be set to db/test.db')
+    conn = open_db()
+    cur = conn.cursor()
+    cur.execute("PRAGMA writable_schema = 1;")
+    cur.execute("DELETE FROM sqlite_master;")
+    cur.execute("PRAGMA writable_schema = 0;")
+    conn.commit()
+    cur.execute("VACUUM;")
+    cur.execute("PRAGMA integrity_check;")
+    db_setup(conn)
+    conn.close()
+
 conn = open_db()
 db_setup(conn)
 conn.close()
