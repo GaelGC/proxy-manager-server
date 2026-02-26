@@ -4,7 +4,9 @@ import sqlite3
 DB_PATH_ENVNAME = "DB_PATH"
 
 def open_db():
-    return sqlite3.connect(os.environ.get(DB_PATH_ENVNAME, "db/db.db"))
+    db = sqlite3.connect(os.environ.get(DB_PATH_ENVNAME, "db/db.db"))
+    db.execute("PRAGMA foreign_keys = ON;")
+    return db
 
 def db_setup(conn):
     cur = conn.cursor()
