@@ -123,15 +123,14 @@ def db_setup(conn):
         CREATE TABLE IF NOT EXISTS items (
             id             INTEGER       PRIMARY KEY AUTOINCREMENT,
             requester_id   INTEGER       NOT NULL,
-            shop_id        INTEGER,
+            shop_id        INTEGER       NOT NULL,
             in_parcel_id   INTEGER,
 
             name           VARCHAR(256)  NOT NULL,
             description    TEXT,
-            url            TEXT,
-            price_yen      INTEGER,
+            url            TEXT          NOT NULL,
+            price_yen      INTEGER       NOT NULL,
             price_euro     INTEGER,
-            store          VARCHAR(256),
             status         VARCHAR(16)   DEFAULT "todo",
             refusal_reason TEXT,
             read_only      BOOLEAN       DEFAULT FALSE,
@@ -142,6 +141,7 @@ def db_setup(conn):
 
             CHECK(status IN ("todo",    "bought",  "warehouse", "consolidating",
                              "shipped", "done",    "refused",   "deleted")),
+            CHECK(price_yen > 0)
 
             FOREIGN KEY(requester_id) REFERENCES users(id),
             FOREIGN KEY(shop_id)      REFERENCES shops(id),
