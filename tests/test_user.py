@@ -1,16 +1,17 @@
 import pytest
 
-from src.user import create_user, authenticate, get_user_id
+from src.user import create_user, authenticate, get_user_id, user_id_from_login
 from src.db import fake_db_setup, open_db
 
-@pytest.mark.dependency()
+@pytest.mark.dependency(name="test_user_creation")
 def test_user_creation():
     fake_db_setup()
     assert create_user("user1", "aaa")[0]
     assert create_user("user2", "bbb")[0]
     assert not create_user("user2", "ccc")[0]
 
-@pytest.mark.dependency(depends=["test_user_creation"])
+@pytest.mark.dependency(depends=["test_user_creation"],
+    name="test_basic_user_authentication")
 def test_basic_user_authentication():
     fake_db_setup()
     create_user("user1", "aaa")
@@ -27,7 +28,8 @@ def test_basic_user_authentication():
     assert auth1[1] != auth3[1]
     assert auth2[1] != auth3[1]
 
-@pytest.mark.dependency(depends=["test_basic_user_authentication"])
+@pytest.mark.dependency(depends=["test_basic_user_authentication"],
+    name="test_session")
 def test_session():
     fake_db_setup()
     create_user("user1", "aaa")

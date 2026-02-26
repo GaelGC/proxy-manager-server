@@ -3,7 +3,7 @@ import pytest
 from src.shop import add_shop, list_shop_names, find_from_name
 from src.db import fake_db_setup, open_db
 
-@pytest.mark.dependency()
+@pytest.mark.dependency(name="test_shop_creation")
 def test_shop_creation():
     fake_db_setup()
     assert add_shop("rakuten", "http://blablbla")[0]
@@ -11,7 +11,8 @@ def test_shop_creation():
     assert not add_shop("rakuten2", "http://blablbla")[0]
     assert add_shop("rakuten2", "http://blablbla2")[0]
 
-@pytest.mark.dependency(depends=["test_shop_creation"])
+@pytest.mark.dependency(depends=["test_shop_creation"],
+    name="test_shop_name_listing")
 def test_shop_name_listing():
     fake_db_setup()
     add_shop("rakuten", "http://blablbla")[0]
@@ -21,7 +22,8 @@ def test_shop_name_listing():
     assert "rakuten" in names
     assert "rakuten2" in names
 
-@pytest.mark.dependency(depends=["test_shop_creation"])
+@pytest.mark.dependency(depends=["test_shop_creation"],
+    name="test_shop_name_lookup")
 def test_shop_name_lookup():
     fake_db_setup()
     add_shop("rakuten", "http://blablbla")[0]
